@@ -1,11 +1,25 @@
 <script setup>
-import sizesData from "../mocks/sizes.json";
-import ingredientsData from "../mocks/ingredients.json";
-import doughData from "../mocks/dough.json";
-import saucesData from "../mocks/sauces.json";
-import sizes from "../common/data/sizes";
-import sauces from "../common/data/sauces";
-import doughSizes from "../common/data/doughSizes";
+import {
+  normalizeDough,
+  normalizeIngredients,
+  normalizeSauces,
+  normalizeSize,
+} from "@/common/helpers/normalize";
+
+import doughJSON from "@/mocks/dough.json";
+import ingredientsJSON from "@/mocks/ingredients.json";
+import saucesJSON from "@/mocks/sauces.json";
+import sizesJSON from "@/mocks/sizes.json";
+
+const doughItems = doughJSON.map(normalizeDough);
+const ingredientItems = ingredientsJSON.map(normalizeIngredients);
+const sauceItems = saucesJSON.map(normalizeSauces);
+const sizeItems = sizesJSON.map(normalizeSize);
+
+const getImage = (image) => {
+  // https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
+  return new URL(`../assets/img/${image}`, import.meta.url).href;
+};
 </script>
 
 <template>
@@ -20,14 +34,14 @@ import doughSizes from "../common/data/doughSizes";
 
             <div class="sheet__content dough">
               <label
-                v-for="{ id, name, description } in doughData"
+                v-for="{ id, name, description, value } in doughItems"
                 :key="id"
                 class="dough__input dough__input--light"
               >
                 <input
                   type="radio"
                   name="dought"
-                  :value="doughSizes[id]"
+                  :value="value"
                   class="visually-hidden"
                   checked
                 />
@@ -44,15 +58,15 @@ import doughSizes from "../common/data/doughSizes";
 
             <div class="sheet__content diameter">
               <label
-                v-for="{ name, id } in sizesData"
+                v-for="{ name, id, value } in sizeItems"
                 :key="id"
-                class="diameter__input diameter__input--small"
-                :class="`diameter__input diameter__input--${sizes[id]}`"
+                class="diameter__input"
+                :class="`diameter__input diameter__input--${value}`"
               >
                 <input
                   type="radio"
                   name="diameter"
-                  :value="sizes[id]"
+                  :value="value"
                   class="visually-hidden"
                 />
                 <span>{{ name }}</span>
@@ -72,14 +86,14 @@ import doughSizes from "../common/data/doughSizes";
                 <p>Основной соус:</p>
 
                 <label
-                  v-for="({ id, name }, index) in saucesData"
+                  v-for="({ id, name, value }, index) in sauceItems"
                   :key="id"
                   class="radio ingredients__input"
                 >
                   <input
                     type="radio"
                     name="sauce"
-                    :value="sauces[id]"
+                    :value="value"
                     :checked="index === 0"
                   />
                   <span>{{ name }}</span>
@@ -91,12 +105,14 @@ import doughSizes from "../common/data/doughSizes";
 
                 <ul class="ingredients__list">
                   <li
-                    v-for="{ id, name } in ingredientsData"
+                    v-for="{ id, name, image } in ingredientItems"
                     :key="id"
                     class="ingredients__item"
                   >
-                    <span class="filling filling--mushrooms">{{ name }}</span>
-
+                    <span class="filling">
+                      <img :src="getImage(image)" :alt="name" />
+                      {{ name }}</span
+                    >
                     <div class="counter counter--orange ingredients__counter">
                       <button
                         type="button"
