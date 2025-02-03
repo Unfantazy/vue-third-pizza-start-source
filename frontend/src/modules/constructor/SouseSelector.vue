@@ -29,7 +29,7 @@ const onChangeValue = (value) => {
         name="sauce"
         :value="value"
         :checked="value === modelValue"
-        @change="onChangeValue(modelValue)"
+        @change="onChangeValue(value)"
       />
       <span>{{ name }}</span>
     </label>
