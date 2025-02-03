@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import {
   normalizeDough,
   normalizeIngredients,
@@ -26,6 +26,7 @@ const sizeItems = sizesJSON.map(normalizeSize);
 const selectedDough = ref("light");
 const selectedDiameter = ref("small");
 const selectedSouce = ref("tomato");
+const selectedIngredients = reactive({});
 </script>
 
 <template>
@@ -61,7 +62,7 @@ const selectedSouce = ref("tomato");
           </label>
 
           <PizzaConstructor
-            :ingredients="{}"
+            :ingredients="selectedIngredients"
             :dough="selectedDough"
             :sauce="selectedSouce"
           />
