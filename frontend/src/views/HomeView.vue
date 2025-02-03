@@ -13,6 +13,7 @@ import ingredientsJSON from "@/mocks/ingredients.json";
 import saucesJSON from "@/mocks/sauces.json";
 import sizesJSON from "@/mocks/sizes.json";
 import DoughSelector from "@/modules/constructor/DoughSelector.vue";
+import DiameterSelector from "@/modules/constructor/DiameterSelector.vue";
 
 const doughItems = doughJSON.map(normalizeDough);
 const ingredientItems = ingredientsJSON.map(normalizeIngredients);
@@ -20,6 +21,7 @@ const sauceItems = saucesJSON.map(normalizeSauces);
 const sizeItems = sizesJSON.map(normalizeSize);
 
 const selectedDough = ref("light");
+const selectedDiameter = ref("small");
 </script>
 
 <template>
@@ -29,29 +31,7 @@ const selectedDough = ref("light");
         <h1 class="title title--big">Конструктор пиццы</h1>
 
         <DoughSelector v-model="selectedDough" :items="doughItems" />
-
-        <div class="content__diameter">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">Выберите размер</h2>
-
-            <div class="sheet__content diameter">
-              <label
-                v-for="{ name, id, value } in sizeItems"
-                :key="id"
-                class="diameter__input"
-                :class="`diameter__input diameter__input--${value}`"
-              >
-                <input
-                  type="radio"
-                  name="diameter"
-                  :value="value"
-                  class="visually-hidden"
-                />
-                <span>{{ name }}</span>
-              </label>
-            </div>
-          </div>
-        </div>
+        <DiameterSelector v-model="selectedDiameter" :items="sizeItems" />
 
         <div class="content__ingredients">
           <div class="sheet">
@@ -167,12 +147,6 @@ const selectedDough = ref("light");
   padding-right: 2.12%;
   padding-bottom: 30px;
   padding-left: 2.12%;
-}
-
-.content__diameter {
-  width: 373px;
-  margin-top: 15px;
-  margin-bottom: 15px;
 }
 
 .content__ingredients {
@@ -513,73 +487,6 @@ const selectedDough = ref("light");
 
   &:focus {
     box-shadow: inset $shadow-regular;
-  }
-}
-
-.diameter__input {
-  margin-right: 8.7%;
-  margin-bottom: 20px;
-  padding-top: 7px;
-  padding-bottom: 6px;
-
-  cursor: pointer;
-
-  span {
-    @include r-s16-h19;
-
-    position: relative;
-
-    padding-left: 46px;
-
-    &::before {
-      @include p_center_v;
-
-      width: 36px;
-      height: 36px;
-
-      content: "";
-      transition: 0.3s;
-
-      border-radius: 50%;
-      background-color: $green-100;
-      background-image: url("@/assets/img/diameter.svg");
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-  }
-
-  &:nth-child(3n) {
-    margin-right: 0;
-  }
-
-  &--small {
-    span::before {
-      background-size: 18px;
-    }
-  }
-
-  &--normal {
-    span::before {
-      background-size: 29px;
-    }
-  }
-
-  &--big {
-    span::before {
-      background-size: 100%;
-    }
-  }
-
-  &:hover {
-    span::before {
-      box-shadow: $shadow-regular;
-    }
-  }
-
-  input {
-    &:checked + span::before {
-      box-shadow: $shadow-large;
-    }
   }
 }
 
