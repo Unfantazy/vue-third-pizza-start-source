@@ -8,12 +8,14 @@ import {
 } from "@/common/helpers/normalize";
 import { getImage } from "@/common/helpers/helpers";
 
+import DoughSelector from "@/modules/constructor/DoughSelector.vue";
+import DiameterSelector from "@/modules/constructor/DiameterSelector.vue";
+import SouseSelector from "@/modules/constructor/SouseSelector.vue";
+
 import doughJSON from "@/mocks/dough.json";
 import ingredientsJSON from "@/mocks/ingredients.json";
 import saucesJSON from "@/mocks/sauces.json";
 import sizesJSON from "@/mocks/sizes.json";
-import DoughSelector from "@/modules/constructor/DoughSelector.vue";
-import DiameterSelector from "@/modules/constructor/DiameterSelector.vue";
 
 const doughItems = doughJSON.map(normalizeDough);
 const ingredientItems = ingredientsJSON.map(normalizeIngredients);
@@ -22,6 +24,7 @@ const sizeItems = sizesJSON.map(normalizeSize);
 
 const selectedDough = ref("light");
 const selectedDiameter = ref("small");
+const selectedSouse = ref("tomato");
 </script>
 
 <template>
@@ -40,23 +43,7 @@ const selectedDiameter = ref("small");
             </h2>
 
             <div class="sheet__content ingredients">
-              <div class="ingredients__sauce">
-                <p>Основной соус:</p>
-
-                <label
-                  v-for="({ id, name, value }, index) in sauceItems"
-                  :key="id"
-                  class="radio ingredients__input"
-                >
-                  <input
-                    type="radio"
-                    name="sauce"
-                    :value="value"
-                    :checked="index === 0"
-                  />
-                  <span>{{ name }}</span>
-                </label>
-              </div>
+              <SouseSelector v-model="selectedSouse" :items="sauceItems" />
 
               <div class="ingredients__filling">
                 <p>Начинка:</p>
@@ -212,28 +199,6 @@ const selectedDiameter = ref("small");
   padding-left: 18px;
 
   border-top: 1px solid rgba($green-500, 0.1);
-}
-
-.ingredients__sauce {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-
-  width: 100%;
-  margin-bottom: 14px;
-
-  p {
-    @include r-s16-h19;
-
-    margin-top: 0;
-    margin-right: 16px;
-    margin-bottom: 10px;
-  }
-}
-
-.ingredients__input {
-  margin-right: 24px;
-  margin-bottom: 10px;
 }
 
 .ingredients__filling {
