@@ -1,25 +1,25 @@
 <script setup>
+import { ref } from "vue";
 import {
   normalizeDough,
   normalizeIngredients,
   normalizeSauces,
   normalizeSize,
 } from "@/common/helpers/normalize";
+import { getImage } from "@/common/helpers/helpers";
 
 import doughJSON from "@/mocks/dough.json";
 import ingredientsJSON from "@/mocks/ingredients.json";
 import saucesJSON from "@/mocks/sauces.json";
 import sizesJSON from "@/mocks/sizes.json";
+import DoughSelector from "@/modules/constructor/DoughSelector.vue";
 
 const doughItems = doughJSON.map(normalizeDough);
 const ingredientItems = ingredientsJSON.map(normalizeIngredients);
 const sauceItems = saucesJSON.map(normalizeSauces);
 const sizeItems = sizesJSON.map(normalizeSize);
 
-const getImage = (image) => {
-  // https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
-  return new URL(`../assets/img/${image}`, import.meta.url).href;
-};
+const selectedDough = ref("light");
 </script>
 
 <template>
@@ -28,29 +28,7 @@ const getImage = (image) => {
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
 
-        <div class="content__dough">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">Выберите тесто</h2>
-
-            <div class="sheet__content dough">
-              <label
-                v-for="{ id, name, description, value } in doughItems"
-                :key="id"
-                class="dough__input dough__input--light"
-              >
-                <input
-                  type="radio"
-                  name="dought"
-                  :value="value"
-                  class="visually-hidden"
-                  checked
-                />
-                <b>{{ name }}</b>
-                <span>{{ description }}</span>
-              </label>
-            </div>
-          </div>
-        </div>
+        <DoughSelector v-model="selectedDough" :items="doughItems" />
 
         <div class="content__diameter">
           <div class="sheet">
@@ -189,13 +167,6 @@ const getImage = (image) => {
   padding-right: 2.12%;
   padding-bottom: 30px;
   padding-left: 2.12%;
-}
-
-.content__dough {
-  width: 527px;
-  margin-top: 15px;
-  margin-right: auto;
-  margin-bottom: 15px;
 }
 
 .content__diameter {
@@ -542,49 +513,6 @@ const getImage = (image) => {
 
   &:focus {
     box-shadow: inset $shadow-regular;
-  }
-}
-
-.dough__input {
-  position: relative;
-
-  margin-right: 8%;
-  margin-bottom: 20px;
-  padding-left: 50px;
-
-  cursor: pointer;
-
-  img {
-    @include p_center-v;
-
-    width: 36px;
-    height: 36px;
-
-    transition: 0.3s;
-
-    border-radius: 50%;
-  }
-
-  b {
-    @include r-s16-h19;
-  }
-
-  span {
-    @include l-s11-h13;
-
-    display: block;
-  }
-
-  &:hover {
-    img {
-      box-shadow: $shadow-regular;
-    }
-  }
-
-  input {
-    &:checked + img {
-      box-shadow: $shadow-large;
-    }
   }
 }
 
