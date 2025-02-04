@@ -1,12 +1,43 @@
 <script setup>
-import { getImage } from "@/common/helpers/helpers";
+import { toRef } from "vue";
 
-defineProps({
+import { MAX_INGREDIENT_COUNT } from "@/common/constants";
+import { getImage } from "@/common/helpers/helpers";
+import AppDrag from "@/common/components/AppDrag.vue";
+
+const props = defineProps({
+  values: {
+    type: Object,
+    default: () => ({}),
+  },
   items: {
     type: Array,
     default: () => [],
   },
 });
+
+const emit = defineEmits(["update"]);
+const values = toRef(props, "values");
+
+const getValue = (ingredient) => {
+  return values.value[ingredient] ?? 0;
+};
+
+const setValue = (ingredient, count) => {
+  emit("update", ingredient, +count);
+};
+
+const decrementValue = (ingredient) => {
+  setValue(ingredient, getValue(ingredient) - 1);
+};
+
+const incrementValue = (ingredient) => {
+  setValue(ingredient, getValue(ingredient) + 1);
+};
+
+const inputValue = (ingredient, count) => {
+  setValue(ingredient, count);
+};
 </script>
 
 <template>
@@ -15,24 +46,45 @@ defineProps({
 
     <ul class="ingredients__list">
       <li
-        v-for="{ id, name, image } in items"
-        :key="id"
+        v-for="ingredientType in items"
+        :key="ingredientType.id"
         class="ingredients__item"
       >
-        <span class="filling">
-          <img :src="getImage(image)" :alt="name" />
-          {{ name }}
-        </span>
+        <app-drag
+          :data-transfer="ingredientType"
+          :draggable="getValue(ingredientType.value) < MAX_INGREDIENT_COUNT"
+        >
+          <div class="filling">
+            <img
+              :src="getImage(ingredientType.image)"
+              :alt="ingredientType.name"
+            />
+            {{ ingredientType.name }}
+          </div>
+        </app-drag>
+
         <div class="counter counter--orange ingredients__counter">
           <button
             type="button"
             class="counter__button counter__button--minus"
-            disabled
+            :disabled="getValue(ingredientType.value) === 0"
+            @click="decrementValue(ingredientType.value)"
           >
             <span class="visually-hidden">Меньше</span>
           </button>
-          <input type="text" name="counter" class="counter__input" value="0" />
-          <button type="button" class="counter__button counter__button--plus">
+          <input
+            type="text"
+            name="counter"
+            class="counter__input"
+            :value="getValue(ingredientType.value)"
+            @input="inputValue(ingredientType.value, $event.target.value)"
+          />
+          <button
+            type="button"
+            class="counter__button counter__button--plus"
+            :disabled="getValue(ingredientType.value) === MAX_INGREDIENT_COUNT"
+            @click="incrementValue(ingredientType.value)"
+          >
             <span class="visually-hidden">Больше</span>
           </button>
         </div>

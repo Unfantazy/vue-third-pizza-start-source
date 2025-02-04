@@ -27,6 +27,13 @@ const selectedDough = ref("light");
 const selectedDiameter = ref("small");
 const selectedSouce = ref("tomato");
 const selectedIngredients = reactive({});
+
+const updateIngredients = (ingredient, count) => {
+  selectedIngredients[ingredient] = count;
+};
+const addIngredient = (ingredient) => {
+  selectedIngredients[ingredient]++;
+};
 </script>
 
 <template>
@@ -46,7 +53,11 @@ const selectedIngredients = reactive({});
 
             <div class="sheet__content ingredients">
               <SouseSelector v-model="selectedSouce" :items="sauceItems" />
-              <IngredientsSelector :items="ingredientItems" />
+              <IngredientsSelector
+                :items="ingredientItems"
+                :values="selectedIngredients"
+                @update="updateIngredients"
+              />
             </div>
           </div>
         </div>
@@ -65,6 +76,7 @@ const selectedIngredients = reactive({});
             :ingredients="selectedIngredients"
             :dough="selectedDough"
             :sauce="selectedSouce"
+            @drop="addIngredient"
           />
 
           <div class="content__result">
