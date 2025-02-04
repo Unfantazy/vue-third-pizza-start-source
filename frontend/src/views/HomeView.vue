@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import {
   normalizeDough,
   normalizeIngredients,
@@ -23,16 +23,23 @@ const ingredientItems = ingredientsJSON.map(normalizeIngredients);
 const sauceItems = saucesJSON.map(normalizeSauces);
 const sizeItems = sizesJSON.map(normalizeSize);
 
-const selectedDough = ref("light");
-const selectedDiameter = ref("small");
-const selectedSouce = ref("tomato");
-const selectedIngredients = reactive({});
+const pizza = reactive({
+  name: "",
+  dough: doughItems[0].value,
+  size: sizeItems[0].value,
+  sauce: sauceItems[0].value,
+  ingredients: ingredientItems.reduce((acc, item) => {
+    acc[item.value] = 0;
+    return acc;
+  }, {}),
+});
 
 const updateIngredients = (ingredient, count) => {
-  selectedIngredients[ingredient] = count;
+  pizza.ingredients[ingredient] = count;
 };
+
 const addIngredient = (ingredient) => {
-  selectedIngredients[ingredient]++;
+  pizza.ingredients[ingredient]++;
 };
 </script>
 
@@ -42,8 +49,8 @@ const addIngredient = (ingredient) => {
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
 
-        <DoughSelector v-model="selectedDough" :items="doughItems" />
-        <DiameterSelector v-model="selectedDiameter" :items="sizeItems" />
+        <DoughSelector v-model="pizza.dough" :items="doughItems" />
+        <DiameterSelector v-model="pizza.size" :items="sizeItems" />
 
         <div class="content__ingredients">
           <div class="sheet">
@@ -52,10 +59,10 @@ const addIngredient = (ingredient) => {
             </h2>
 
             <div class="sheet__content ingredients">
-              <SouseSelector v-model="selectedSouce" :items="sauceItems" />
+              <SouseSelector v-model="pizza.sauce" :items="sauceItems" />
               <IngredientsSelector
                 :items="ingredientItems"
-                :values="selectedIngredients"
+                :values="pizza.ingredients"
                 @update="updateIngredients"
               />
             </div>
@@ -73,9 +80,9 @@ const addIngredient = (ingredient) => {
           </label>
 
           <PizzaConstructor
-            :ingredients="selectedIngredients"
-            :dough="selectedDough"
-            :sauce="selectedSouce"
+            :ingredients="pizza.ingredients"
+            :dough="pizza.dough"
+            :sauce="pizza.sauce"
             @drop="addIngredient"
           />
 
